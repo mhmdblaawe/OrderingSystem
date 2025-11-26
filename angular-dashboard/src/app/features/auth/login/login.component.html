@@ -1,0 +1,75 @@
+<div class="login-container">
+  <div class="login-wrapper">
+    <!-- Left Column - Login Form -->
+    <div class="login-form-section">
+      <div class="logo-section">
+        <div class="logo-icon">
+          <mat-icon>store</mat-icon>
+        </div>
+        <h1 class="login-title">Sign in</h1>
+        <p class="login-subtitle">Don't have an account? <a href="#" class="signup-link">Sign up</a></p>
+      </div>
+
+      <div class="info-box">
+        <mat-icon class="info-icon">info</mat-icon>
+        <span>You are browsing Ordering System Demo. Click on the 'Sign in' button to access the Dashboard.</span>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email address</mat-label>
+          <input matInput formControlName="username" type="email" required>
+          <mat-icon matPrefix>email</mat-icon>
+          @if (loginForm.get('username')?.hasError('required') && loginForm.get('username')?.touched) {
+            <mat-error>Email is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button" tabindex="-1">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+            <mat-error>Password is required</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="form-options">
+          <mat-checkbox>Remember me</mat-checkbox>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" class="signin-button" [disabled]="loading">
+          @if (loading) {
+            <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+            <span>Signing in...</span>
+          } @else {
+            <span>Sign in</span>
+          }
+        </button>
+      </form>
+    </div>
+
+    <!-- Right Column - Promotional Section -->
+    <div class="promo-section">
+      <div class="promo-content">
+        <h2 class="promo-title">Welcome to our community</h2>
+        <p class="promo-text">
+          Ordering System helps developers to build organized and well coded dashboards full of beautiful and rich modules. 
+          Join us and start building your application today.
+        </p>
+        <div class="community-avatars">
+          <div class="avatar" *ngFor="let i of [1,2,3,4]">
+            <mat-icon>person</mat-icon>
+          </div>
+        </div>
+        <p class="community-text">More than 17k people joined us, it's your turn</p>
+      </div>
+      <div class="promo-pattern"></div>
+    </div>
+  </div>
+</div>
+

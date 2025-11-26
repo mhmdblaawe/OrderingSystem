@@ -83,10 +83,34 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:4200",
+                "https://localhost:4200",
+                "http://localhost:7079",
+                "https://localhost:7079",
+                "http://localhost:5121",
+                "https://localhost:5121"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
- if (app.Environment.IsDevelopment())
+// IMPORTANT: CORS must be before HTTPS redirection to handle preflight requests
+app.UseCors("AllowAngular");
+
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>
@@ -94,10 +118,12 @@ var app = builder.Build();
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
         options.RoutePrefix = string.Empty; // Make Swagger the root page
     });
+    // Skip HTTPS redirection in development to avoid CORS issues with redirects
 }
-
-
-app.UseHttpsRedirection();
+else
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

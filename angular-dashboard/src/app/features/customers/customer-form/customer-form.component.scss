@@ -1,0 +1,63 @@
+.form-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+mat-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+}
+
+mat-card-header {
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+mat-card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+mat-card-content {
+  padding-top: 0;
+}
+
+mat-form-field {
+  margin-bottom: 20px;
+
+  ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+      background-color: #f9fafb;
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      background-color: white;
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+
+  button {
+    min-width: 120px;
+    height: 44px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+}
+
