@@ -39,6 +39,15 @@ namespace OrderingSystem.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetOrderDetails/{id}")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var result = await _service.GetFullAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
+
         [HttpPost("CreateOrder")]
         public async Task<IActionResult> Create(CreateOrderDto dto)
         {

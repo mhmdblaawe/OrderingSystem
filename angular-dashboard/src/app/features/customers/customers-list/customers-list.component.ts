@@ -1,37 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CustomerService } from '../../../core/services/customer.service';
+import { AlertService } from '../../../core/services/alert.service';
 import { Customer } from '../../../core/models/customer.model';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DataTableComponent, TableColumn } from '../../../shared/components/data-table/data-table.component';
 
 @Component({
   selector: 'app-customers-list',
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatPaginatorModule,
-    MatCardModule,
-    MatSnackBarModule,
     FormsModule,
-    MatProgressSpinnerModule
+    DataTableComponent
   ],
   templateUrl: './customers-list.component.html',
   styleUrl: './customers-list.component.scss'
 })
-export class CustomersListComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name', 'email', 'phone', 'actions'];
+export class CustomersListComponent implements OnInit, AfterViewInit {
+  @ViewChild('actionsTemplate') actionsTemplate!: TemplateRef<any>;
+
+  columns: TableColumn[] = [];
   customers: Customer[] = [];
   totalItems = 0;
   pageSize = 10;
@@ -42,11 +32,55 @@ export class CustomersListComponent implements OnInit {
   constructor(
     private customerService: CustomerService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
+    // Columns will be initialized after view init
+  }
+
+  ngAfterViewInit(): void {
+    this.initializeColumns();
     this.loadCustomers();
+  }
+
+  initializeColumns(): void {
+    this.columns = [
+      {
+        key: 'id',
+        label: 'ID',
+        sortable: true,
+        width: '100px',
+        align: 'left'
+      },
+      {
+        key: 'name',
+        label: 'Customer Name',
+        sortable: true,
+        align: 'left'
+      },
+      {
+        key: 'email',
+        label: 'Email',
+        sortable: true,
+        align: 'left'
+      },
+      {
+        key: 'phone',
+        label: 'Phone',
+        sortable: true,
+        width: '150px',
+        align: 'left'
+      },
+      {
+        key: 'actions',
+        label: 'Actions',
+        sortable: false,
+        width: '150px',
+        align: 'left',
+        template: this.actionsTemplate
+      }
+    ];
   }
 
   loadCustomers(): void {
@@ -63,18 +97,29 @@ export class CustomersListComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-        this.snackBar.open('Error loading customers', 'Close', { duration: 3000 });
+        this.alertService.error('Error loading customers');
       }
     });
   }
 
-  onPageChange(event: PageEvent): void {
+  onPageChange(event: { pageIndex: number; pageSize: number }): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.loadCustomers();
   }
 
+  onSort(event: { column: string; direction: 'asc' | 'desc' }): void {
+    // Implement sorting logic if needed
+    this.loadCustomers();
+  }
+
   onSearch(): void {
+    this.pageIndex = 0;
+    this.loadCustomers();
+  }
+
+  clearSearch(): void {
+    this.searchName = '';
     this.pageIndex = 0;
     this.loadCustomers();
   }
@@ -84,17 +129,21 @@ export class CustomersListComponent implements OnInit {
   }
 
   deleteCustomer(id: number): void {
-    if (confirm('Are you sure you want to delete this customer?')) {
-      this.customerService.deleteCustomer(id).subscribe({
-        next: () => {
-          this.snackBar.open('Customer deleted successfully', 'Close', { duration: 3000 });
-          this.loadCustomers();
-        },
-        error: () => {
-          this.snackBar.open('Error deleting customer', 'Close', { duration: 3000 });
-        }
-      });
-    }
+    this.alertService.deleteConfirm(
+      'Are you sure you want to delete this customer?',
+      'Delete Customer'
+    ).then((result) => {
+      if (result.isConfirmed) {
+        this.customerService.deleteCustomer(id).subscribe({
+          next: () => {
+            this.alertService.success('Customer deleted successfully');
+            this.loadCustomers();
+          },
+          error: () => {
+            this.alertService.error('Error deleting customer');
+          }
+        });
+      }
+    });
   }
 }
-

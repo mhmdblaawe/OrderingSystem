@@ -35,6 +35,14 @@ export const routes: Routes = [
       {
         path: 'customers/new',
         loadComponent: () => import('./features/customers/customer-form/customer-form.component').then(m => m.CustomerFormComponent)
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./features/orders/orders-list/orders-list.component').then(m => m.OrdersListComponent)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/customers/customer-form/customer-form.component').then(m => m.CustomerFormComponent)
       }
     ]
   },

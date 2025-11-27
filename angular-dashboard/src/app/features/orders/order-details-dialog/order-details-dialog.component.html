@@ -1,0 +1,105 @@
+<div class="order-details-dialog">
+  <div class="dialog-header">
+    <h2 class="dialog-title">Order Details</h2>
+    <button mat-icon-button (click)="close()" class="close-btn" title="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="dialog-content">
+    <!-- Order Header Info -->
+    <div class="order-header">
+      <div class="order-info-row">
+        <div class="info-item">
+          <span class="info-label">Order ID:</span>
+          <span class="info-value">#{{ orderDetails.orderId }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Order Date:</span>
+          <span class="info-value">{{ formatDate(orderDetails.orderDate) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Status:</span>
+          <span 
+            class="status-badge" 
+            [style.background-color]="getStatusColor(orderDetails.statusId) + '20'" 
+            [style.color]="getStatusColor(orderDetails.statusId)"
+          >
+            {{ getStatusName(orderDetails.statusId) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer Information -->
+    <div class="section">
+      <h3 class="section-title">
+        <mat-icon>person</mat-icon>
+        Customer Information
+      </h3>
+      <div class="customer-info">
+        <div class="info-item">
+          <span class="info-label">Name:</span>
+          <span class="info-value">{{ orderDetails.customerName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email:</span>
+          <span class="info-value">{{ orderDetails.customerEmail }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Phone:</span>
+          <span class="info-value">{{ orderDetails.customerPhone }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="section">
+      <h3 class="section-title">
+        <mat-icon>shopping_cart</mat-icon>
+        Order Items ({{ orderDetails.items.length }})
+      </h3>
+      <div class="items-table-container">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Line Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of orderDetails.items; track item.orderItemId) {
+              <tr>
+                <td class="product-name">{{ item.productName }}</td>
+                <td class="quantity">{{ item.quantity }}</td>
+                <td class="unit-price">${{ item.unitPrice | number:'1.2-2' }}</td>
+                <td class="line-total">${{ item.lineTotal | number:'1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <div class="summary-row">
+        <span class="summary-label">Total Amount:</span>
+        <span class="summary-value">${{ orderDetails.totalAmount | number:'1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="dialog-actions">
+    <button mat-raised-button color="primary" (click)="close()" class="close-button">
+      Close
+    </button>
+  </div>
+</div>
+

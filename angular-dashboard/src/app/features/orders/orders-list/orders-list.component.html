@@ -1,0 +1,145 @@
+<div class="orders-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Orders Management</h1>
+      <p class="page-subtitle">View and manage customer orders</p>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label class="filter-label">Filter by Status:</label>
+        <select 
+          [(ngModel)]="statusFilter" 
+          (change)="onStatusFilterChange()"
+          class="status-filter"
+        >
+          <option [value]="null">All Statuses</option>
+          @for (status of statuses; track status.id) {
+            <option [value]="status.id">{{ status.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Search Customer:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="customerSearch" 
+          (input)="onCustomerSearchChange()"
+          placeholder="Search by name, email, or phone..."
+          class="customer-search-input"
+        />
+        @if (customerSearch && filteredCustomers.length > 0 && filteredCustomers.length <= 5) {
+          <div class="customer-suggestions">
+            @for (customer of filteredCustomers; track customer.id) {
+              <div 
+                class="customer-suggestion-item"
+                (click)="customerSearch = customer.name; onCustomerSearchChange(); onFilterChange()"
+              >
+                {{ customer.name }} - {{ customer.email }}
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Start Date:</label>
+        <input 
+          type="date" 
+          [(ngModel)]="startDate" 
+          (change)="onDateFilterChange()"
+          class="date-filter"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">End Date:</label>
+        <input 
+          type="date" 
+          [(ngModel)]="endDate" 
+          (change)="onDateFilterChange()"
+          class="date-filter"
+        />
+      </div>
+
+      <div class="filter-group">
+        <button 
+          type="button" 
+          (click)="clearFilters()"
+          class="clear-filters-btn"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Templates -->
+  <ng-template #dateTemplate let-order>
+    <span class="date-value">{{ formatDate(order.orderDate) }}</span>
+  </ng-template>
+
+  <ng-template #amountTemplate let-order>
+    <span class="amount-value">${{ order.totalAmount | number:'1.2-2' }}</span>
+  </ng-template>
+
+  <ng-template #statusTemplate let-order>
+    <span class="status-badge" [style.background-color]="getStatusColor(order.statusId) + '20'" [style.color]="getStatusColor(order.statusId)">
+      {{ order.statusDesc }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsTemplate let-order>
+    <div class="action-buttons">
+      <select 
+        [value]="order.statusId"
+        (change)="changeStatus(order, +$any($event.target).value)"
+        class="status-select"
+        [style.border-color]="getStatusColor(order.statusId)"
+        [disabled]="!canChangeStatus(order.statusId)"
+        [title]="canChangeStatus(order.statusId) ? 'Change Status' : 'Cannot change status for Shipped or Cancelled orders'"
+        [class.disabled]="!canChangeStatus(order.statusId)"
+      >
+        @for (status of statuses; track status.id) {
+          <option [value]="status.id">{{ status.name }}</option>
+        }
+      </select>
+      <button 
+        type="button"
+        (click)="viewOrderDetails(order)"
+        class="action-btn view-btn"
+        title="View Details"
+      >
+        View
+      </button>
+      <button 
+        type="button"
+        (click)="deleteOrder(order)"
+        class="action-btn delete-btn"
+        title="Delete Order"
+      >
+        Delete
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- Data Table -->
+  <app-data-table
+    [columns]="columns"
+    [data]="orders"
+    [loading]="loading"
+    [totalItems]="totalItems"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[5, 10, 20, 50, 100]"
+    emptyMessage="No orders found"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSort($event)"
+  ></app-data-table>
+</div>
+

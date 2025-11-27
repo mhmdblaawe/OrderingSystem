@@ -1,4 +1,5 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import 'sweetalert2/dist/sweetalert2.min.css';
 
 * {
   margin: 0;
@@ -8,8 +9,8 @@
 
 html, body {
   height: 100%;
-  font-family: 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #f8f9fa;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #f5f7fa;
   color: #1f2937;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -19,10 +20,55 @@ body {
   margin: 0;
 }
 
+// SweetAlert2 Custom Styling
+.swal2-popup {
+  border-radius: 12px !important;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+.swal2-title {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #1a1a1a !important;
+}
+
+.swal2-html-container {
+  font-size: 15px !important;
+  color: #6b7280 !important;
+  line-height: 1.6 !important;
+}
+
+.swal-confirm-button {
+  border-radius: 8px !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+}
+
+.swal-cancel-button {
+  border-radius: 8px !important;
+  padding: 10px 24px !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background: #f3f4f6 !important;
+  }
+}
+
 // Custom Material Theme Overrides
 .mat-mdc-raised-button.mat-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  border: none;
 }
 
 .mat-mdc-form-field {
@@ -32,8 +78,117 @@ body {
 }
 
 .mat-mdc-card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 16px !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+// Enhanced Form Field Styling
+.mat-mdc-form-field {
+  .mat-mdc-text-field-wrapper {
+    border-radius: 12px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &.mat-focused {
+    .mat-mdc-text-field-wrapper {
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+  }
+
+  .mat-mdc-form-field-icon-prefix,
+  .mat-mdc-form-field-icon-suffix {
+    color: #9ca3af;
+  }
+}
+
+// Button Enhancements
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button {
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.mat-mdc-raised-button.mat-primary {
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35);
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.45);
+  }
+}
+
+// Table Enhancements
+.mat-mdc-table {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+.mat-mdc-header-cell {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  padding: 16px 20px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.mat-mdc-cell {
+  padding: 16px 20px;
+  vertical-align: middle;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mat-mdc-row {
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #f9fafb;
+  }
+
+  &:last-child .mat-mdc-cell {
+    border-bottom: none;
+  }
+}
+
+// Dialog Enhancements
+.mat-mdc-dialog-container {
+  border-radius: 16px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+}
+
+.order-details-dialog-panel {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+}
+
+// Snackbar Enhancements
+.mat-mdc-snack-bar-container {
   border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
 }
 
 // Utility Classes
@@ -45,10 +200,16 @@ body {
 
 .card {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
   margin-bottom: 20px;
+  transition: all 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
 }
 
 .form-group {
@@ -87,20 +248,94 @@ body {
 
 // Scrollbar Styling
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 5px;
 
   &:hover {
-    background: #a8a8a8;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
   }
 }
 
+// Loading Spinner
+.mat-mdc-progress-spinner {
+  circle {
+    stroke: #667eea;
+  }
+}
+
+// Focus States
+*:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+// RTL Support
+[dir="rtl"] {
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    text-align: right;
+  }
+
+  .flex-between {
+    flex-direction: row-reverse;
+  }
+
+  mat-icon {
+    transform: scaleX(-1);
+  }
+}
+
+// Responsive Typography
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+// Animation Utilities
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+// Glassmorphism Effect
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+// Gradient Text
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

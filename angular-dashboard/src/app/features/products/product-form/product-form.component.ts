@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
+import { AlertService } from '../../../core/services/alert.service';
+import { LoadingService } from '../../../core/services/loading.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-product-form',
@@ -20,8 +21,7 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule,
-    MatSnackBarModule
+    MatIconModule
   ],
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.scss'
@@ -37,7 +37,8 @@ export class ProductFormComponent implements OnInit {
     private productService: ProductService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private alertService: AlertService,
+    private loadingService: LoadingService
   ) {
     this.productForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -68,8 +69,9 @@ export class ProductFormComponent implements OnInit {
           });
         },
         error: () => {
-          this.snackBar.open('Error loading product', 'Close', { duration: 3000 });
-          this.router.navigate(['/products']);
+          this.alertService.error('Error loading product').then(() => {
+            this.router.navigate(['/products']);
+          });
         }
       });
     }
@@ -78,28 +80,35 @@ export class ProductFormComponent implements OnInit {
   onSubmit(): void {
     if (this.productForm.valid) {
       this.loading = true;
+      this.loadingService.show();
       const productData = this.productForm.value;
 
       if (this.isEditMode && this.productId) {
         this.productService.updateProduct(this.productId, productData).subscribe({
           next: () => {
-            this.snackBar.open('Product updated successfully', 'Close', { duration: 3000 });
-            this.router.navigate(['/products']);
+            this.loadingService.hide();
+            this.alertService.success('Product updated successfully').then(() => {
+              this.router.navigate(['/products']);
+            });
           },
           error: () => {
             this.loading = false;
-            this.snackBar.open('Error updating product', 'Close', { duration: 3000 });
+            this.loadingService.hide();
+            this.alertService.error('Error updating product');
           }
         });
       } else {
         this.productService.createProduct(productData).subscribe({
           next: () => {
-            this.snackBar.open('Product created successfully', 'Close', { duration: 3000 });
-            this.router.navigate(['/products']);
+            this.loadingService.hide();
+            this.alertService.success('Product created successfully').then(() => {
+              this.router.navigate(['/products']);
+            });
           },
           error: () => {
             this.loading = false;
-            this.snackBar.open('Error creating product', 'Close', { duration: 3000 });
+            this.loadingService.hide();
+            this.alertService.error('Error creating product');
           }
         });
       }

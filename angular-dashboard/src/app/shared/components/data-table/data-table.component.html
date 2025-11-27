@@ -1,0 +1,109 @@
+<div class="data-table-wrapper">
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading data...</p>
+    </div>
+  } @else if (data.length === 0) {
+    <div class="empty-state">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+      </svg>
+      <p>{{ emptyMessage }}</p>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            @for (column of columns; track column.key) {
+              <th 
+                [style.width]="column.width"
+                [style.text-align]="column.align || 'left'"
+              >
+                <div class="header-content">
+                  <span>{{ column.label }}</span>
+                </div>
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of data; track $index) {
+            <tr>
+              @for (column of columns; track column.key) {
+                <td [style.text-align]="column.align || 'left'">
+                  @if (column.template) {
+                    <ng-container *ngTemplateOutlet="column.template; context: { $implicit: row }"></ng-container>
+                  } @else {
+                    {{ row[column.key] }}
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalItems > pageSize) {
+      <div class="table-pagination">
+        <div class="pagination-info">
+          <span>Showing {{ startIndex }} to {{ endIndex }} of {{ totalItems }} entries</span>
+        </div>
+        <div class="pagination-controls">
+          <button 
+            class="page-btn"
+            [disabled]="pageIndex === 0"
+            (click)="onPageChange(pageIndex - 1)"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Previous
+          </button>
+          
+          <div class="page-numbers">
+            @for (page of getPageNumbers(); track page) {
+              @if (page === '...') {
+                <span class="page-ellipsis">...</span>
+              } @else {
+                <button
+                  class="page-number"
+                  [class.active]="isActivePage(page)"
+                  (click)="goToPage(page)"
+                >
+                  {{ page }}
+                </button>
+              }
+            }
+          </div>
+
+          <button 
+            class="page-btn"
+            [disabled]="pageIndex >= totalPages - 1"
+            (click)="onPageChange(pageIndex + 1)"
+          >
+            Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+        <div class="page-size-selector">
+          <label>Rows per page:</label>
+          <select 
+            [value]="pageSize"
+            (change)="onPageSizeChange(+$any($event.target).value)"
+            class="page-size-select"
+          >
+            @for (size of pageSizeOptions; track size) {
+              <option [value]="size">{{ size }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    }
+  }
+</div>
+
